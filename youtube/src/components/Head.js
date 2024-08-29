@@ -1,12 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { toggleMenu } from '../utils/appSlice';
+import { YOUTUBE_SEARCH_API } from '../utils/constants';
 
 const Head = () => {
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   const dispatch = useDispatch();
   const toggleMenuHandler = () => {
     dispatch(toggleMenu());
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => getSearchSuggestion(), 3000);
+
+    return() => {
+      clearTimeout(timer);
+    };
+  },[searchQuery]);
+
+  const getSearchSuggestion = async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': '80e7f163b6mshe2369a0b17418a7p1120efjsn6c90df702ab7',
+        'X-RapidAPI-Host': 'youtube-search-results.p.rapidapi.com',
+      }
+    };
+    console.log("API CALL - " + searchQuery);
+    const data = await fetch(`https://youtube-search-results.p.rapidapi.com/youtube-search/?q=${searchQuery}`, options);
+    const json = await data.json();
+    console.log(json.videos);
   }
 
   return (
@@ -26,10 +51,19 @@ const Head = () => {
       <div className='col-span-10 ml-36'>
         <input
         className='w-3/4 border border-gray-400 rounded-l-full p-2'
-        type='text'/>
+        type='text'
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        />
         <button className='border border-gray-400 px-5 py-2 rounded-r-full bg-gray-100'>
         🔍
         </button>
+      </div>
+      <div className="fixed bg-white py-2 px-2 col-span-10 ml-[26rem] w-96 mt-10 shadow-lg rounded-lg border border-gray-100">
+          <ul>
+            <li className="py-2 px-3 shadow-sm hover:bg-gray-100">go</li>
+            <li className="py-2 px-3 shadow-sm hover:bg-gray-100">dhow</li>
+          </ul>
       </div>
       <div className='col-span-1'>
         <img
