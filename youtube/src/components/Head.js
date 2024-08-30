@@ -8,6 +8,7 @@ const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const searchCache = useSelector((store) => store.search);
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
     /**
    *  searchCache = {
@@ -129,21 +130,27 @@ const Head = () => {
             type='text'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
             />
             <button className='border border-gray-400 px-5 py-2 rounded-r-full bg-gray-100'>
             🔍
             </button>
         </div>
       </div>
-      <div className="fixed bg-white py-2 px-2 col-span-10 ml-[26rem] w-96 mt-10 shadow-lg rounded-lg border border-gray-100">
-      <ul>
-          {suggestions.map((s) => (
-            <li key={s.id} className="py-2 px-3 shadow-sm hover:bg-gray-100">
-              🔍 {s.title}
-            </li>
-          ))}
-      </ul>
-      </div>
+      {
+        showSuggestions && (
+          <div className="fixed bg-white py-2 px-2 col-span-10 ml-[26rem] w-96 mt-10 shadow-lg rounded-lg border border-gray-100">
+            <ul>
+                {suggestions.map((s) => (
+                  <li key={s.id} className="py-2 px-3 shadow-sm hover:bg-gray-100">
+                    🔍 {s.title}
+                  </li>
+                ))}
+            </ul>
+          </div>    
+        )
+      }
       <div className='col-span-1'>
         <img
         className='h-8'
